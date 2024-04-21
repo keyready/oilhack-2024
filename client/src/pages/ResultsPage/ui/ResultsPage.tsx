@@ -32,8 +32,7 @@ const ResultsPage = memo((props: ResultsPageProps) => {
     useEffect(() => {
         const intervalId = setInterval(async () => {
             try {
-                const result = await $api.get('/api/confirm', {
-                    params: fileId,
+                const result = await $api.get(`/api/confirm?fileId=${fileId}`, {
                     responseType: 'blob',
                 });
 
