@@ -21,7 +21,7 @@ class HomeView extends GetView<HomeController> {
       // ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Stack(alignment: Alignment.center, children: [
+        child: Stack(children: [
           Positioned.fill(
             child: SvgPicture.asset(
               'assets/images/bgImg.svg',
@@ -42,7 +42,6 @@ class HomeView extends GetView<HomeController> {
                   height: 20,
                 ),
                 Container(
-                  width: Get.size.width * 0.7,
                   child: ElevatedButton(
                     onPressed: fileUpController.uploadFile,
                     child: Text(
@@ -64,8 +63,6 @@ class HomeView extends GetView<HomeController> {
                 ),
                 Obx(() => fileUpController.uploadedFile.value.isNotEmpty
                     ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
                             height: 20,
