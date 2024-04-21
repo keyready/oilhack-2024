@@ -24,14 +24,16 @@ class FileUploadController extends GetxController {
         isLoading.value = true;
 
         var request = http.MultipartRequest(
-            'POST', Uri.parse('http://localhost:5000/api/calculate'));
+            'POST', Uri.parse('http://176.109.101.172:5000/api/calculate'));
         request.files
             .add(await http.MultipartFile.fromPath('file', file.path!));
         var streamedResponse = await request.send();
 
         if (streamedResponse.statusCode == 200) {
           final responseBody = await http.Response.fromStream(streamedResponse);
-          final responseData = responseBody;
+          final responseData = responseBody.body;
+          print(responseData);
+          print(responseData.toString());
 
           fileId.value = responseData.toString();
 
@@ -62,28 +64,48 @@ class FileUploadController extends GetxController {
     try {
       isLoading.value = true;
       var response = await Dio().get(
-        'http://localhost:5000/api/confirm?fileId=$fileId',
+        'http://176.109.101.172:5000/api/confirm?fileId=$fileId',
         options: Options(responseType: ResponseType.bytes),
       );
 
       if (response.statusCode == 200) {
-        final directory = await getApplicationDocumentsDirectory();
-        final filePath = '${directory.path}/downloaded_file.csv';
-        final file = File(filePath);
+        // Получаем путь к папке "Загрузки"
+        final directory = await getDownloadsDirectory();
+        if (directory == null) {
+          // Обработка случая, когда папка "Загрузки" недоступна
+          Get.snackbar('Error', 'Cannot access downloads directory',
+              snackPosition: SnackPosition.TOP,
+              borderColor: Colors.red,
+              borderWidth: 2);
+          return;
+        }
+        final filePath = "${directory.path}/downloaded_file$fileId.csv";
+        final file = await File(filePath).create();
+
+        // Проверяем, существует ли файл, и создаем его, если нет
+        if (!await file.exists()) {
+          await file.create();
+        }
+
+        // Записываем данные в файл
         await file.writeAsBytes(response.data);
         print('File downloaded to $filePath');
       } else {
+        // Обработка ошибки скачивания файла
         Get.snackbar('Error', 'Failed to download file',
             snackPosition: SnackPosition.TOP,
             borderColor: Colors.red,
             borderWidth: 2);
+        print(response.statusCode);
       }
     } catch (e) {
+      // Обработка исключений
       Get.snackbar('Error', e.toString(),
           snackPosition: SnackPosition.TOP,
           borderColor: Colors.red,
           borderWidth: 2);
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 }
