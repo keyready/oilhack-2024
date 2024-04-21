@@ -29,20 +29,17 @@ def file_endpoint():
     file_bytes = file.file.read()
     id = uuid.uuid4()
     file_path_raw = os.path.join(DATA_DIR, f'raw_{id}.csv')
-    file_path_processed = os.path.join(DATA_DIR, f'processed_{id}.csv')
     file_path_result = f'{SAVE_DIR}/result_{id}.csv'
 
     with open(file_path_raw, 'wb') as file:
         file.write(file_bytes)
 
     try:
-        # processing(file_path_raw, file_path_processed)
-        # test
         processing(file_path_raw, file_path_result)
     except Exception as e:
         logging.warning("%s#%s", id, e)
-        if os.path.exists(file_path_processed):
-            os.remove(file_path_processed)
+        if os.path.exists(file_path_result):
+            os.remove(file_path_result)
         raise HTTPError(
             status=422,
             msg="Incorrect file format",
