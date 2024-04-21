@@ -3,6 +3,4 @@ cppimport
 numpy
 scikit-learn
 pandas
-bottle
-gunicorn
-packaging
+pika

@@ -1,13 +1,9 @@
-import os
 import uuid
-import logging
 
 from bottle import Bottle, request, HTTPResponse
 from errors import HTTPError
-from utils import processing
+from utils import send_task
 
-DATA_DIR = '../data'
-SAVE_DIR = '../media'
 
 app = Bottle()
 
@@ -28,33 +24,15 @@ def file_endpoint():
         )
     file_bytes = file.file.read()
     id = uuid.uuid4()
-    file_path_raw = os.path.join(DATA_DIR, f'raw_{id}.csv')
-    file_path_result = f'{SAVE_DIR}/result_{id}.csv'
 
-    with open(file_path_raw, 'wb') as file:
-        file.write(file_bytes)
-
-    try:
-        processing(file_path_raw, file_path_result)
-    except Exception as e:
-        logging.warning("%s#%s", id, e)
-        if os.path.exists(file_path_result):
-            os.remove(file_path_result)
-        raise HTTPError(
-            status=422,
-            msg="Incorrect file format",
-            loc=["body", "file"]
-        )
-    finally:
-        if os.path.exists(file_path_raw):
-            os.remove(file_path_raw)
+    send_task(str(id), file_bytes)
 
     response_ = HTTPResponse(
         body=f'result_{id}.csv',
         headers=cors_headers
     )
-
     return response_
+
 
 @app.error()
 def any_error(error):
