@@ -6,5 +6,6 @@
 
 __pycache__
 /media/*
+/raw_data/*
 
 test_data_fix_concat.csv
