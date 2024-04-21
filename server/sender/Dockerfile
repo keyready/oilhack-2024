@@ -8,5 +8,3 @@ RUN pip3 install setuptools
 RUN pip3 install -r requirements.txt
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-EXPOSE 5000

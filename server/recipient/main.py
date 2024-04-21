@@ -1,14 +1,22 @@
 import os
+import multiprocessing
 import logging
 
 import pika
 from utils import processing
 
+
+envs = os.environ
+WORKERS_QUANTITY = int(envs["WORKERS_QUANTITY"])
+RABBIT_LOGIN = envs["RABBIT_LOGIN"]
+RABBIT_PASSWORD = envs["RABBIT_PASSWORD"]
+
 DATA_DIR = '../raw_data'
 SAVE_DIR = '../media'
 
+
 def main():
-    credentials = pika.PlainCredentials('user', 'password')
+    credentials = pika.PlainCredentials(RABBIT_LOGIN, RABBIT_PASSWORD)
     parameters = pika.ConnectionParameters('rabbitmq', 5672, '/', credentials=credentials, heartbeat=600)
     connection = pika.BlockingConnection(parameters)
 
@@ -40,5 +48,14 @@ def callback(ch, method, properties, body):
         if os.path.exists(path_to_raw):
             os.remove(path_to_raw)
 
+
 if __name__ == '__main__':
-    main()
+    processes = []
+    for _ in range(WORKERS_QUANTITY):
+        process = multiprocessing.Process(target=main)
+        process.start()
+        processes.append(process)
+
+    for process in processes:
+        process.join()
+        
