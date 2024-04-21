@@ -2,11 +2,12 @@ import { Page } from 'widgets/Page/Page';
 import { classNames } from 'shared/lib/classNames/classNames';
 import { VStack } from 'shared/UI/Stack';
 import { CSSProperties, FormEvent, useCallback, useState } from 'react';
-import { Input } from 'shared/UI/Input';
-import { $api } from 'shared/api/api';
 import { Text } from 'shared/UI/Text';
 import { AxiosError } from 'axios';
 import { Loader } from 'shared/UI/Loader';
+import { FileUploader } from 'shared/UI/FileUploader';
+import { Button } from 'shared/UI/Button';
+import { $api } from 'shared/api/api';
 
 import classes from './MainPage.module.scss';
 
@@ -15,10 +16,16 @@ const MainPage = () => {
         background: `url(/static/bgImg.svg)`,
     };
 
-    const [value, setValue] = useState<string>('');
-    const [prediction, setPrediction] = useState<number>(83.5678);
+    const [file, setFile] = useState<File>();
+    const [result, setResult] = useState<string>('');
+
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+
+    const handleFileChange = useCallback((file: File) => {
+        setError('');
+        setFile(file);
+    }, []);
 
     const onSubmit = useCallback(
         async (event: FormEvent<HTMLFormElement>) => {
@@ -27,19 +34,25 @@ const MainPage = () => {
             setLoading(true);
 
             try {
-                const makePrediction = await $api.post<number>('/api/calculate', value);
-                if (typeof makePrediction === 'number') {
-                    setPrediction(makePrediction * 100);
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const resultedFile = await $api.post<string>('/api/calculate', formData);
+                    // const resultedFile = 'file_123.csv';
+                    if (typeof resultedFile === 'string') {
+                        setResult(resultedFile);
+                    }
                 }
             } catch (e) {
                 const error = e as AxiosError;
-                setPrediction(0);
+                setResult('');
                 setError(error.response?.data.message || 'Произошла ошибка запроса на сервер');
             }
             setLoading(false);
-            setValue('');
+            setFile(undefined);
         },
-        [value],
+        [file],
     );
 
     return (
@@ -51,27 +64,23 @@ const MainPage = () => {
             )}
             <VStack gap="32" maxW justify="center" align="center">
                 <img className={classes.mainLogo} src="/static/mainLogo.svg" alt="Картинка" />
-                <Input
-                    disabled={loading}
-                    onSubmit={onSubmit}
-                    placeholder="Введите формулу"
-                    value={value}
-                    onChange={(val) => {
-                        setValue(val);
-                        setError('');
-                    }}
-                />
-                {prediction > 0 && (
-                    <Text
-                        className={classes.textWrapper}
-                        title={`Хуйня не произойдет с вероятностью ${prediction.toFixed(2)}%`}
-                        size="large"
-                    />
+
+                <form onSubmit={onSubmit} style={{ width: '100%' }}>
+                    <VStack gap="32" align="center" maxW>
+                        <FileUploader file={file} setFile={handleFileChange} />
+                        {file && <Button type="submit">Отправить на обработку</Button>}
+                    </VStack>
+                </form>
+
+                {result && (
+                    <a className={classes.link} download href={result}>
+                        Скачать результат
+                    </a>
                 )}
                 {error && (
                     <Text
                         className={classes.textWrapper}
-                        title={`Произошла ошибка во время вычисления: ${prediction}`}
+                        title={error}
                         size="large"
                         variant="error"
                     />
