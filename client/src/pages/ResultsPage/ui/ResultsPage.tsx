@@ -33,7 +33,7 @@ const ResultsPage = memo((props: ResultsPageProps) => {
         const intervalId = setInterval(async () => {
             try {
                 const result = await $api.get('/api/confirm', {
-                    params: { fileId },
+                    params: fileId,
                     responseType: 'blob',
                 });
 
