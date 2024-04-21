@@ -90,6 +90,10 @@ class FileUploadController extends GetxController {
         // Записываем данные в файл
         await file.writeAsBytes(response.data);
         print('File downloaded to $filePath');
+        Get.snackbar('Success', 'файл сохранен в загрузки',
+            snackPosition: SnackPosition.TOP,
+            borderColor: Colors.green,
+            borderWidth: 2);
       } else {
         // Обработка ошибки скачивания файла
         Get.snackbar('Error', 'Failed to download file',
