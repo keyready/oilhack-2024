@@ -1,0 +1,17 @@
+.Input {
+    width: 100%;
+    padding: 5px 10px;
+    border: none;
+    color: black;
+    background: var(--bg-color);
+    font: var(--font-m);
+    transition: 200ms;
+    outline: none;
+}
+
+.wrapper {
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: var(--bg-color);
+    outline: 2px solid black;
+}
