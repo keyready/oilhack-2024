@@ -8,6 +8,8 @@ import { Loader } from 'shared/UI/Loader';
 import { FileUploader } from 'shared/UI/FileUploader';
 import { Button } from 'shared/UI/Button';
 import { $api } from 'shared/api/api';
+import { RoutePath } from 'shared/config/routeConfig/routeConfig';
+import { useNavigate } from 'react-router';
 
 import classes from './MainPage.module.scss';
 
@@ -16,8 +18,9 @@ const MainPage = () => {
         background: `url(/static/bgImg.svg)`,
     };
 
+    const navigate = useNavigate();
+
     const [file, setFile] = useState<File>();
-    const [result, setResult] = useState<string>('');
 
     const [error, setError] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -38,19 +41,18 @@ const MainPage = () => {
                     const formData = new FormData();
                     formData.append('file', file);
 
-                    const resultedFile = await $api.post<string>('/api/calculate', formData);
-                    // @ts-ignore
-                    setResult(resultedFile.data);
+                    const resultedFile = await $api.post('/api/calculate', formData);
+                    // const resultedFile = { data: 'fileIkjnsdkjgnsdkjgnsjkdng' };
+                    navigate(`${RoutePath.results}?fileId=${resultedFile.data}`);
                 }
             } catch (e) {
                 const error = e as AxiosError;
-                setResult('');
                 setError(error.response?.data.message || 'Произошла ошибка запроса на сервер');
             }
             setLoading(false);
             setFile(undefined);
         },
-        [file],
+        [file, navigate],
     );
 
     return (
@@ -70,11 +72,6 @@ const MainPage = () => {
                     </VStack>
                 </form>
 
-                {result && (
-                    <a className={classes.link} download href={`/media/${result}`}>
-                        Скачать результат
-                    </a>
-                )}
                 {error && (
                     <Text
                         className={classes.textWrapper}

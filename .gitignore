@@ -1,7 +1,7 @@
 /.idea
 
 /client/node_modules
-/client/mock-server
+/client/server
 /client/.idea
 
 __pycache__
