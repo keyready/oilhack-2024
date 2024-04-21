@@ -6,6 +6,8 @@ export interface buildPaths {
     src: string;
     staticFrom: string;
     staticTo: string;
+    mediaFrom: string;
+    mediaTo: string;
 }
 
 export interface BuildOptions {

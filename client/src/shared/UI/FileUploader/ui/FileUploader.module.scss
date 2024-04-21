@@ -1,0 +1,19 @@
+.button {    
+    cursor: pointer;
+    padding: 40px 60px;
+    border-radius: 12px;
+    color: var(--inverted-primary-color);
+    background: var(--bg-color);
+    font: var(--font-m);
+    transition: 200ms;
+    min-width: 50%;
+    outline: 6px dotted var(--blue-500);
+	
+    &:hover {
+        background: var(--inverted-bg-color);
+    }
+}
+
+.title {
+    color: var(--blue-700) !important;
+}

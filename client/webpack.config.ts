@@ -18,6 +18,8 @@ export default (env: BuildEnv) => {
             src: path.resolve(__dirname, 'src'),
             staticFrom: path.resolve(__dirname, 'public/static'),
             staticTo: path.resolve(__dirname, '../dist/static'),
+            mediaFrom: path.resolve(__dirname, '/public/media'),
+            mediaTo: path.resolve(__dirname, '../dist/media'),
         },
         isDev,
         port,

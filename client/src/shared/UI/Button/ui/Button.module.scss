@@ -1,14 +1,16 @@
 .Button {
     cursor: pointer;
     padding: 5px 15px;
+    border: none;
     border-radius: 5px;
     color: var(--inverted-primary-color);
     background: var(--inverted-bg-color);
     font: var(--font-m);
     transition: 200ms;
+    outline: none;
 
     &:hover {
-        background: var(--bg-color);
+        outline: 2px solid var(--primary-color);
     }
 
     &:active {
