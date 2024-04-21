@@ -39,10 +39,8 @@ const MainPage = () => {
                     formData.append('file', file);
 
                     const resultedFile = await $api.post<string>('/api/calculate', formData);
-                    // const resultedFile = 'file_123.csv';
-                    if (typeof resultedFile === 'string') {
-                        setResult(resultedFile);
-                    }
+                    // @ts-ignore
+                    setResult(resultedFile.data);
                 }
             } catch (e) {
                 const error = e as AxiosError;
