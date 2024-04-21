@@ -21,18 +21,3 @@
     right: 0;
     left: 0;
 }
-
-.link {
-    &:link, &:visited {
-        cursor: pointer;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        color: var(--inverted-primary-color);
-        background: var(--inverted-bg-color);
-        font: var(--font-m);
-        transition: 200ms;
-        text-decoration: none;
-        outline: none;
-    }
-}
