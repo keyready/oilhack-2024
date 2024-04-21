@@ -39,10 +39,10 @@ class HomeView extends GetView<HomeController> {
                   height: 200,
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 20,
                 ),
                 Container(
-                  width: Get.size.width * 0.8,
+                  width: Get.size.width * 0.7,
                   child: ElevatedButton(
                     onPressed: fileUpController.uploadFile,
                     child: Text(
@@ -90,9 +90,8 @@ class HomeView extends GetView<HomeController> {
                           fileUpController.isLoading.value
                               ? Container(
                                   padding: EdgeInsets.all(2),
-                                  height: 80,
                                   child: LoadingAnimationWidget.dotsTriangle(
-                                      color: Colors.blue, size: 80),
+                                      color: Colors.blue, size: 40),
                                 )
                               : fileUpController.response.value.isNotEmpty
                                   ? Center(
