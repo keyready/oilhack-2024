@@ -73,7 +73,7 @@ const MainPage = () => {
                 </form>
 
                 {result && (
-                    <a className={classes.link} download href={result}>
+                    <a className={classes.link} download href={`/media/${result}`}>
                         Скачать результат
                     </a>
                 )}
