@@ -76,21 +76,21 @@ services:
     networks:
       - back_net
 
-  # nginx:
+  nginx:
 
-  #   build: ./dist
+    build: ./dist
 
-  #   container_name: oil-static
+    container_name: oil-static
     
-  #   ports:
-  #     - "80:80"
+    ports:
+      - "80:80"
     
-  #   volumes:
-  #     - ./dist/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-  #     - ./media:/media
+    volumes:
+      - ./dist/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./media:/media
 
-  #   networks:
-  #     - back_net
+    networks:
+      - back_net
 
 networks:
   back_net:
