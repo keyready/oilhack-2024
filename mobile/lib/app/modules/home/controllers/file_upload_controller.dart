@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FileUploadController extends GetxController {
   var response = ''.obs;
@@ -21,10 +26,12 @@ class FileUploadController extends GetxController {
             'POST', Uri.parse('http://localhost:5000/api/calculate'));
         request.files
             .add(await http.MultipartFile.fromPath('file', file.path!));
-        var response = await request.send();
+        var streamedResponse = await request.send();
 
-        if (response.statusCode == 200) {
-          this.response.value = await response.stream.bytesToString();
+        if (streamedResponse.statusCode == 200) {
+          final responseBody = await http.Response.fromStream(streamedResponse);
+          final responseData = jsonDecode(responseBody.body);
+          this.response.value = responseData['id'].toString();
         } else {
           Get.snackbar('Error', 'Failed to upload file',
               snackPosition: SnackPosition.TOP,
@@ -43,6 +50,35 @@ class FileUploadController extends GetxController {
           borderColor: Colors.red,
           borderWidth: 2);
       response.value = 'тут ошибочка а должна быть ссылочка';
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> downloadFile(String id) async {
+    try {
+      isLoading.value = true;
+      var response = await Dio().get(
+        'http://localhost:5000/api/confirm?id=$id',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
+      if (response.statusCode == 200) {
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/downloaded_file.bin';
+        final file = File(filePath);
+        await file.writeAsBytes(response.data);
+        print('File downloaded to $filePath');
+      } else {
+        Get.snackbar('Error', 'Failed to download file',
+            snackPosition: SnackPosition.TOP,
+            borderColor: Colors.red,
+            borderWidth: 2);
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString(),
+          snackPosition: SnackPosition.TOP,
+          borderColor: Colors.red,
+          borderWidth: 2);
     }
     isLoading.value = false;
   }
