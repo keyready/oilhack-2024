@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import { Loader } from 'shared/UI/Loader';
 import { FileUploader } from 'shared/UI/FileUploader';
 import { Button } from 'shared/UI/Button';
+import { $api } from 'shared/api/api';
 
 import classes from './MainPage.module.scss';
 
@@ -37,8 +38,8 @@ const MainPage = () => {
                     const formData = new FormData();
                     formData.append('file', file);
 
-                    // const resultedFile = await $api.post<string>('/api/calculate', formData);
-                    const resultedFile = 'file_123.csv';
+                    const resultedFile = await $api.post<string>('/api/calculate', formData);
+                    // const resultedFile = 'file_123.csv';
                     if (typeof resultedFile === 'string') {
                         setResult(resultedFile);
                     }
@@ -72,7 +73,7 @@ const MainPage = () => {
                 </form>
 
                 {result && (
-                    <a className={classes.link} download href={`/media/${result}`}>
+                    <a className={classes.link} download href={result}>
                         Скачать результат
                     </a>
                 )}
