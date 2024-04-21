@@ -2,3 +2,8 @@
 
 /client/node_modules
 /client/mock-server
+
+__pycache__
+/media/*
+
+test_data_fix_concat.csv

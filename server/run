@@ -1,0 +1,27 @@
+#!/bin/bash
+
+container_name="oil-worker"
+
+
+if docker ps -a --format '{{.Names}}' | grep -q "^${container_name}\$"; then
+    # echo "Container $container_name exists. Starting the existing container..."
+    # docker start $container_name
+    echo "Container $container_name exists. Removing the existing container..."
+    docker stop $container_name
+    docker rm $container_name
+    echo "Creating a new container..."
+    docker run -d \
+        -p 5000:5000 \
+        --name $container_name \
+        -v $(pwd):/service \
+        -v $(pwd)/../media:/media \
+        --entrypoint gunicorn oil-hack -w 2 -b 0.0.0.0:5000 main:app --reload
+else
+    echo "Container $container_name does not exist. Creating a new container..."
+    docker run -d \
+        -p 5000:5000 \
+        --name $container_name \
+        -v $(pwd):/service \
+        -v $(pwd)/../media:/media \
+        --entrypoint gunicorn oil-hack -w 2 -b 0.0.0.0:5000 main:app --reload
+fi

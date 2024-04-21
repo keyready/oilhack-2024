@@ -1,0 +1,8 @@
+pybind11
+cppimport
+numpy
+scikit-learn
+pandas
+bottle
+gunicorn
+packaging
