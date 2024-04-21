@@ -12,6 +12,7 @@ class FileUploadController extends GetxController {
   var response = ''.obs;
   var uploadedFile = ''.obs;
   var isLoading = false.obs;
+  var fileId = ''.obs;
 
   Future<void> uploadFile() async {
     try {
@@ -30,8 +31,11 @@ class FileUploadController extends GetxController {
 
         if (streamedResponse.statusCode == 200) {
           final responseBody = await http.Response.fromStream(streamedResponse);
-          final responseData = jsonDecode(responseBody.body);
-          this.response.value = responseData['id'].toString();
+          final responseData = responseBody;
+
+          fileId.value = responseData.toString();
+
+          this.response.value = responseData.toString();
         } else {
           Get.snackbar('Error', 'Failed to upload file',
               snackPosition: SnackPosition.TOP,
@@ -54,17 +58,17 @@ class FileUploadController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> downloadFile(String id) async {
+  Future<void> downloadFile() async {
     try {
       isLoading.value = true;
       var response = await Dio().get(
-        'http://localhost:5000/api/confirm?id=$id',
+        'http://localhost:5000/api/confirm?fileId=$fileId',
         options: Options(responseType: ResponseType.bytes),
       );
 
       if (response.statusCode == 200) {
         final directory = await getApplicationDocumentsDirectory();
-        final filePath = '${directory.path}/downloaded_file.bin';
+        final filePath = '${directory.path}/downloaded_file.csv';
         final file = File(filePath);
         await file.writeAsBytes(response.data);
         print('File downloaded to $filePath');

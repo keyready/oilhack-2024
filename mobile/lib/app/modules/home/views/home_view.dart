@@ -97,11 +97,7 @@ class HomeView extends GetView<HomeController> {
                                   ? Center(
                                       child: InkWell(
                                         onTap: () {
-                                          launchUrl(
-                                              Uri.parse(
-                                                  'https://problembo.com/ru/services/image-ai-upscale'),
-                                              mode: LaunchMode
-                                                  .externalApplication);
+                                          fileUpController.downloadFile();
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -113,7 +109,7 @@ class HomeView extends GetView<HomeController> {
                                           ),
                                           padding: EdgeInsets.all(4),
                                           child: Text(
-                                            fileUpController.response.value,
+                                            "Скачать файл: ${fileUpController.response.value}",
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.blue),
