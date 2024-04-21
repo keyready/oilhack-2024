@@ -1,19 +1,9 @@
-import os
 import uuid
-import logging
 
-import pika
 from bottle import Bottle, request, HTTPResponse
 from errors import HTTPError
+from utils import send_task
 
-credentials = pika.PlainCredentials('user', 'password')
-parameters = pika.ConnectionParameters('rabbitmq', 5672, '/', credentials=credentials, heartbeat=600)
-connection = pika.BlockingConnection(parameters)
-
-channel = connection.channel()
-channel.queue_declare(queue='requests', durable=True)
-
-DATA_DIR = '../raw_data'
 
 app = Bottle()
 
@@ -34,21 +24,15 @@ def file_endpoint():
         )
     file_bytes = file.file.read()
     id = uuid.uuid4()
-    file_path_raw = os.path.join(DATA_DIR, f'raw_{id}.csv')
 
-    with open(file_path_raw, 'wb') as file:
-        file.write(file_bytes)
-
-    channel.basic_publish(exchange='',
-                          routing_key='requests',
-                          body=str(id))
+    send_task(str(id), file_bytes)
 
     response_ = HTTPResponse(
         body=f'result_{id}.csv',
         headers=cors_headers
     )
-    logging.info(f'Request {id} sent for processing')
     return response_
+
 
 @app.error()
 def any_error(error):

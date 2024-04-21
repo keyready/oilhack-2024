@@ -22,7 +22,6 @@ services:
     volumes:
       - ./server/sender:/service
       - ./media:/media
-      - ./server/raw_data:/raw_data
 
     depends_on:
       - rabbitmq
@@ -47,7 +46,6 @@ services:
     volumes:
       - ./server/recipient:/service
       - ./media:/media
-      - ./server/raw_data:/raw_data
 
     depends_on:
       - rabbitmq
