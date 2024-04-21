@@ -74,7 +74,7 @@ class HomeView extends GetView<HomeController> {
                             child: Container(
                               padding: EdgeInsets.all(10),
                               child: Text(
-                                'Uploaded file: ${fileUpController.uploadedFile.value}.csv',
+                                'Uploaded file: ${fileUpController.uploadedFile.value}',
                                 style: TextStyle(fontSize: 18),
                               ),
                               decoration: BoxDecoration(
@@ -109,7 +109,7 @@ class HomeView extends GetView<HomeController> {
                                           ),
                                           padding: EdgeInsets.all(4),
                                           child: Text(
-                                            "Скачать файл: ${fileUpController.response.value}",
+                                            "Скачать файл: ${fileUpController.response.value}.csv",
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.blue),
