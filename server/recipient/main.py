@@ -11,7 +11,6 @@ WORKERS_QUANTITY = int(envs["WORKERS_QUANTITY"])
 RABBIT_LOGIN = envs["RABBIT_LOGIN"]
 RABBIT_PASSWORD = envs["RABBIT_PASSWORD"]
 
-DATA_DIR = '../raw_data'
 SAVE_DIR = '../media'
 
 
@@ -31,22 +30,9 @@ def main():
 def callback(ch, method, properties, body):
     logging.info(f'Request {properties.message_id} accepted for processing')
 
-    path_to_raw=os.path.join(DATA_DIR, f'raw_{properties.message_id}.csv')
     path_to_result=os.path.join(SAVE_DIR, f'result_{properties.message_id}.csv')
 
-    with open(path_to_raw, 'wb') as file:
-        file.write(body)
-
-    try:
-        processing(
-            path_to_raw=path_to_raw,
-            path_to_result=path_to_result
-        )
-    except Exception as e:
-        logging.warning(f'{properties.message_id}:Processing error\n{e}')
-    finally:
-        if os.path.exists(path_to_raw):
-            os.remove(path_to_raw)
+    processing(body, path_to_result)
 
 
 if __name__ == '__main__':

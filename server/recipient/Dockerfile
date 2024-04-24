@@ -8,7 +8,6 @@ RUN apt-get -qqy update && apt-get install -qqy \
     libdpkg-perl \
 	--no-install-recommends
 
-RUN mkdir /raw_data
 WORKDIR /service
 COPY ./ ./
 
